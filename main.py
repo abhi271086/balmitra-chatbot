@@ -1,9 +1,9 @@
 import os
 
 from googletrans import Translator
-
 from langchain.chains import LLMChain
 from langchain.chains.conversation.memory import ConversationBufferWindowMemory
+from langchain.utils.secret import SecretStr
 from langchain_core.messages import SystemMessage
 from langchain_core.prompts import (
     ChatPromptTemplate,
@@ -83,7 +83,7 @@ def main():
     model = 'llama3-8b-8192'
     # Initialize Groq Langchain chat object and conversation
     # Initialize ChatGroq with the correct parameters for the current version
-    groq_chat = ChatGroq(groq_api_key=groq_api_key, model_name=model)
+    groq_chat = ChatGroq(api_key=SecretStr(groq_api_key), model=model)
 
     print(
         "Hello! I'm your friendly multilingual chatbot. I can help children with questions about social issues and provide support. I understand English, Hindi, Marathi, and Urdu!"
