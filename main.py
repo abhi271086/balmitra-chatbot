@@ -3,7 +3,7 @@ import os
 from googletrans import Translator
 from langchain.chains import LLMChain
 from langchain.chains.conversation.memory import ConversationBufferWindowMemory
-from langchain.utils.secret import SecretStr
+from langchain_core.utils import SecretStr
 from langchain_core.messages import SystemMessage
 from langchain_core.prompts import (
     ChatPromptTemplate,
