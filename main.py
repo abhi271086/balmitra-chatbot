@@ -1,4 +1,8 @@
 import os
+import tracemalloc
+
+# Enable tracemalloc for debugging object allocations
+tracemalloc.start()
 
 from googletrans import Translator
 from langchain.chains import LLMChain
