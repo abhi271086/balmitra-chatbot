@@ -72,10 +72,57 @@ def translate_from_english(text, target_language):
         return text  # Return English if translation fails
 
 
+def get_greeting(language):
+    """
+    Return a greeting message in the selected language
+    """
+    greetings = {
+        'english': "Hello! I'm your friendly chatbot. I can help children with questions about social issues and provide support.",
+        'hindi': "नमस्ते! मैं आपका दोस्ताना चैटबॉट हूँ। मैं बच्चों को सामाजिक मुद्दों के बारे में सवालों के साथ मदद कर सकता हूँ और समर्थन प्रदान कर सकता हूँ।",
+        'marathi': "नमस्कार! मी आपला मैत्रीपूर्ण चॅटबॉट आहे. मी मुलांना सामाजिक समस्यांविषयी प्रश्नांना मदत करू शकतो आणि समर्थन देऊ शकतो.",
+        'urdu': "السلام علیکم! میں آپ کا دوستانہ چیٹ بوٹ ہوں۔ میں بچوں کو سماجی مسائل کے بارے میں سوالات میں مدد کر سکتا ہوں اور حمایت فراہم کر سکتا ہوں۔"
+    }
+    return greetings.get(language, greetings['english'])
+
+def get_input_prompt(language):
+    """
+    Return an input prompt in the selected language
+    """
+    prompts = {
+        'english': "Ask a question: ",
+        'hindi': "एक प्रश्न पूछें: ",
+        'marathi': "एक प्रश्न विचारा: ",
+        'urdu': "سوال پوچھیں: "
+    }
+    return prompts.get(language, prompts['english'])
+
+def select_language():
+    """
+    Let the user select their preferred language
+    """
+    print("Please select your preferred language / कृपया अपनी पसंदीदा भाषा चुनें / कृपया तुमची पसंतीची भाषा निवडा / براہ کرم اپنی پسندیدہ زبان منتخب کریں:")
+    print("1. English")
+    print("2. Hindi / हिंदी")
+    print("3. Marathi / मराठी")
+    print("4. Urdu / اردو")
+    
+    while True:
+        choice = input("Enter the number (1-4): ")
+        if choice == "1":
+            return "english"
+        elif choice == "2":
+            return "hindi"
+        elif choice == "3":
+            return "marathi"
+        elif choice == "4":
+            return "urdu"
+        else:
+            print("Invalid choice. Please try again.")
+
 def main():
     """
     This function is the main entry point of the application. It sets up the Groq client, the interface, 
-    and handles the chat interaction with language detection and social support features.
+    and handles the chat interaction with language selection and social support features.
     """
 
     # Get Groq API key
@@ -85,18 +132,11 @@ def main():
     # Initialize ChatGroq with the correct parameters for the current version
     groq_chat = ChatGroq(api_key=groq_api_key, model=model)
 
-    print(
-        "Hello! I'm your friendly multilingual chatbot. I can help children with questions about social issues and provide support. I understand English, Hindi, Marathi, and Urdu!"
-    )
-    print(
-        "नमस्ते! मैं आपका दोस्ताना बहुभाषी चैटबॉट हूँ। मैं बच्चों को सामाजिक मुद्दों के बारे में सवालों के साथ मदद कर सकता हूँ और समर्थन प्रदान कर सकता हूँ। मैं अंग्रेज़ी, हिंदी, मराठी और उर्दू समझता हूँ!"
-    )
-    print(
-        "नमस्कार! मी आपला मैत्रीपूर्ण बहुभाषिक चॅटबॉट आहे. मी मुलांना सामाजिक समस्यांविषयी प्रश्नांना मदत करू शकतो आणि समर्थन देऊ शकतो. मला इंग्रजी, हिंदी, मराठी आणि उर्दू समजते!"
-    )
-    print(
-        "السلام علیکم! میں آپ کا دوستانہ کثیر لسانی چیٹ بوٹ ہوں۔ میں بچوں کو سماجی مسائل کے بارے میں سوالات میں مدد کر سکتا ہوں اور حمایت فراہم کر سکتا ہوں۔ مجھے انگریزی، ہندی، مراٹھی اور اردو سمجھ آتی ہے!"
-    )
+    # Let user select their preferred language
+    selected_language = select_language()
+    
+    # Display greeting in the selected language
+    print(get_greeting(selected_language))
 
     system_prompt = '''You are a friendly conversational chatbot specifically designed to help children from underprivileged backgrounds. 
     You provide supportive, age-appropriate responses about social issues including but not limited to:
@@ -118,20 +158,14 @@ def main():
                                             memory_key="chat_history",
                                             return_messages=True)
 
-    last_language = 'english'  # Default language
-
     while True:
-        user_question = input("Ask a question: ")
+        user_question = input(get_input_prompt(selected_language))
 
         # If the user has asked a question,
         if user_question:
-            # Detect language
-            detected_language = detect_language(user_question)
-            last_language = detected_language
-
+            # Use the selected language instead of detecting it
             # Translate to English if needed
-            english_question = translate_to_english(user_question,
-                                                    detected_language)
+            english_question = translate_to_english(user_question, selected_language)
 
             # Construct a chat prompt template using various components
             prompt = ChatPromptTemplate.from_messages([
@@ -148,22 +182,17 @@ def main():
 
             # Create a conversation chain using the LangChain LLM (Language Learning Model)
             conversation = LLMChain(
-                llm=
-                groq_chat,  # The Groq LangChain chat object initialized earlier.
+                llm=groq_chat,  # The Groq LangChain chat object initialized earlier.
                 prompt=prompt,  # The constructed prompt template.
-                verbose=
-                False,  # TRUE Enables verbose output, which can be useful for debugging.
-                memory=
-                memory,  # The conversational memory object that stores and manages the conversation history.
+                verbose=False,  # FALSE disables verbose output for cleaner user experience
+                memory=memory,  # The conversational memory object that stores and manages the conversation history.
             )
 
             # The chatbot's answer is generated by sending the full prompt to the Groq API.
-            english_response = conversation.predict(
-                human_input=english_question)
+            english_response = conversation.predict(human_input=english_question)
 
-            # Translate the response back to the detected language
-            final_response = translate_from_english(english_response,
-                                                    detected_language)
+            # Translate the response back to the selected language
+            final_response = translate_from_english(english_response, selected_language)
 
             print("Chatbot:", final_response)
 
