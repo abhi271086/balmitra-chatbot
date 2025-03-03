@@ -71,9 +71,16 @@ def main():
     groq_api_key = os.environ['GROQ_API_KEY']
     model = 'llama3-8b-8192'
     # Initialize Groq Langchain chat object and conversation
+    from langchain_groq import ChatGroq
+    from groq import Groq
+    
+    # Create Groq client directly
+    groq_client = Groq(api_key=groq_api_key)
+    
+    # Pass the client to ChatGroq
     groq_chat = ChatGroq(
-            api_key=groq_api_key, 
-            model_name=model
+        client=groq_client,
+        model_name=model
     )
     
     print("Hello! I'm your friendly multilingual chatbot. I can help children with questions about social issues and provide support. I understand English, Hindi, Marathi, and Urdu!")
