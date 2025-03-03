@@ -72,7 +72,7 @@ def main():
     model = 'llama3-8b-8192'
     # Initialize Groq Langchain chat object and conversation
     groq_chat = ChatGroq(
-            groq_api_key=groq_api_key, 
+            api_key=groq_api_key, 
             model_name=model
     )
     
