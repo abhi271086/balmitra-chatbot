@@ -39,7 +39,7 @@ def detect_language(text):
         return 'english'  # Default to English if detection fails
 
 
-def translate_to_english(text, source_language):
+async def translate_to_english(text, source_language):
     """
     Translate text to English for processing
     """
@@ -48,15 +48,15 @@ def translate_to_english(text, source_language):
 
     translator = Translator()
     try:
-        translation = translator.translate(text,
-                                           src=source_language[:2],
-                                           dest='en')
+        translation = await translator.translate(text,
+                                                src=source_language[:2],
+                                                dest='en')
         return translation.text
     except:
         return text  # Return original if translation fails
 
 
-def translate_from_english(text, target_language):
+async def translate_from_english(text, target_language):
     """
     Translate response from English to target language
     """
@@ -70,7 +70,7 @@ def translate_from_english(text, target_language):
     }.get(target_language, 'en')
     translator = Translator()
     try:
-        translation = translator.translate(text, src='en', dest=lang_code)
+        translation = await translator.translate(text, src='en', dest=lang_code)
         return translation.text
     except:
         return text  # Return English if translation fails
@@ -123,7 +123,7 @@ def select_language():
         else:
             print("Invalid choice. Please try again.")
 
-def main():
+async def main():
     """
     This function is the main entry point of the application. It sets up the Groq client, the interface, 
     and handles the chat interaction with language selection and social support features.
@@ -169,7 +169,7 @@ def main():
         if user_question:
             # Use the selected language instead of detecting it
             # Translate to English if needed
-            english_question = translate_to_english(user_question, selected_language)
+            english_question = await translate_to_english(user_question, selected_language)
 
             # Construct a chat prompt template using various components
             prompt = ChatPromptTemplate.from_messages([
@@ -196,10 +196,11 @@ def main():
             english_response = conversation.predict(human_input=english_question)
 
             # Translate the response back to the selected language
-            final_response = translate_from_english(english_response, selected_language)
+            final_response = await translate_from_english(english_response, selected_language)
 
             print("Chatbot:", final_response)
 
 
 if __name__ == "__main__":
-    main()
+    import asyncio
+    asyncio.run(main())
