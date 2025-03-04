@@ -6,7 +6,7 @@ from main import translate_to_english, translate_from_english
 
 # Set page configuration
 st.set_page_config(
-    page_title="Multilingual Social Support Chatbot",
+    page_title="BalMitra - Children's Support Chatbot",
     page_icon="💬",
     layout="wide"
 )
@@ -30,8 +30,14 @@ from langchain_core.prompts import (
 )
 from langchain_groq import ChatGroq
 
-# Header
-st.title("Multilingual Social Support Chatbot for Children")
+# Header with logo
+col1, col2 = st.columns([1, 5])
+with col1:
+    # Logo can be placed in the root directory of the project
+    st.image("logo.png", width=100)  # Adjust width as needed
+with col2:
+    st.title("BalMitra - Support Chatbot for Children")
+    st.caption("A friendly companion to help with your questions")
 
 # Language selection
 language_options = {
