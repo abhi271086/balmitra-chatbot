@@ -34,8 +34,10 @@ from langchain_groq import ChatGroq
 st.title("BalMitra - Support Chatbot for Children")
 st.caption("A friendly companion to help with your questions")
 
-# Display larger logo below the title
-st.image("logo.png", width=200)  # Increased width from 100 to 200
+# Display centered and larger logo below the title
+col1, col2, col3 = st.columns([1, 2, 1])
+with col2:
+    st.image("logo.png", width=400, use_column_width=True)  # Doubled width from 200 to 400
 
 # Language selection
 language_options = {
