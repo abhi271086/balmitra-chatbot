@@ -37,7 +37,7 @@ st.caption("A friendly companion to help with your questions")
 # Display centered and larger logo below the title
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
-    st.image("logo.png", width=400, use_column_width=True)  # Doubled width from 200 to 400
+    st.image("logo.png", width=600, use_column_width=True)  # Increased width from 400 to 600
 
 # Language selection
 language_options = {
